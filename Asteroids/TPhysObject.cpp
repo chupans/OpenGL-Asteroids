@@ -6,6 +6,7 @@ void TPhysObject::updatePosition( float deltaTime )
   shift = speed;
   shift *= deltaTime;
   this->center += shift;
+  this->m_collider.UpdatePosition(shift);
   this->m_collider.m_center = this->center;  //TODO: исправить дублирующийс€ центр. Ћибо в коллайдер, либо в физ объект
 }
 
@@ -15,20 +16,20 @@ void TPhysObject::ApplyImpulse( Vector2f j, Vector2f r )
   //w += r.PerpDot(j) / i;
 };
 
-void TPhysObject::updateSpeed( float deltaTime ) //»змен€ем скорость в соответствии с силой, которую присвоили после исправлени€ коллизии
+//»змен€ем скорость в соответствии с силой, которую присвоили после исправлени€ коллизии
+void TPhysObject::updateSpeed( float deltaTime )
 {
-  Vector2f speedChange(force.getX()/_mass, force.getY()/_mass);
   speed += speedChange;
-  force.setX(0); force.setY(0);
+  speedChange.setX(0); speedChange.setY(0);
 }
 
 TPhysObject::TPhysObject(Vector2f startPosition, Vector2f startSpeed)
 {
   center = startPosition;
   speed = startSpeed;
-  m_collider = TCollider();
-  m_collider.m_center = center;
-  m_collider.m_colliderType = COLLIDER_CIRCLE;
+//   m_collider = TCollider();
+//   m_collider.m_center = center;
+//   m_collider.m_colliderType = COLLIDER_CIRCLE;
 }
 
 

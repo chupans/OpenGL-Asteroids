@@ -24,7 +24,7 @@ Camera* pGameCamera = NULL;
 static const char* pVS = "                                                          \n\
 #version 330                                                                        \n\
                                                                                     \n\
-layout (location = 0) in vec3 Position;                                             \n\
+layout (location = 0) in vec2 Position;                                             \n\
                                                                                     \n\
 uniform mat4 gWVP;                                                                  \n\
                                                                                     \n\
@@ -32,8 +32,8 @@ out vec4 Color;                                                                 
                                                                                     \n\
 void main()                                                                         \n\
 {                                                                                   \n\
-    gl_Position = gWVP * vec4(Position, 1.0);                                       \n\
-    Color = vec4(clamp(Position*5, 0.0, 1.0), 1.0);                                   \n\
+    gl_Position = gWVP * vec4(Position, 0.0, 1.0);                                  \n\
+    Color = vec4(clamp(Position*5, 0.0, 1.0), 0.5, 1.0);                            \n\
 }";
 
 static const char* pFS = "                                                          \n\
@@ -56,6 +56,7 @@ static void RenderSceneCB()
     curTime = GetTickCount();
     timeDelta = curTime - lastTime;
     lastTime = curTime;
+    timeDelta = 10;
 
     eng->physStep((float)timeDelta/1000);
     pGameCamera->OnRender();
@@ -73,15 +74,7 @@ static void RenderSceneCB()
 
       glUniformMatrix4fv(gWVPLocation, 1, GL_TRUE, (const GLfloat*)p.GetTrans());
 
-      glEnableVertexAttribArray(0);
-      glBindBuffer(GL_ARRAY_BUFFER, VBO);
-      glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
-      glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, IBO);
-
-      //glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-      glDrawRangeElements(GL_TRIANGLES, start, end, 6, GL_UNSIGNED_INT, 0);
-
-      glDisableVertexAttribArray(0);
+      it->m_collider.Render();
     }
 
     glutSwapBuffers();
@@ -114,43 +107,6 @@ static void InitializeGlutCallbacks()
     glutSpecialFunc(SpecialKeyboardCB);
     glutPassiveMotionFunc(PassiveMouseCB);
     glutKeyboardFunc(KeyboardCB);
-}
-
-static void CreateVertexBuffer()
-{
-    Vector3f Vertices[12];
-    Vertices[0] = Vector3f(-0.2f, -0.2f, 0.0f);
-    Vertices[1] = Vector3f(0.2f, -0.2f, 0.0f);
-    Vertices[2] = Vector3f(0.2f, 0.2f, 0.0f);
-    Vertices[3] = Vector3f(-0.2f, 0.2f, 0.0f);
-
-    Vertices[4] = Vector3f(-0.2f, -0.2f, 0.0f);
-    Vertices[5] = Vector3f(0.2f, -0.2f, 0.0f);
-    Vertices[6] = Vector3f(0.2f, 0.2f, 0.0f);
-    Vertices[7] = Vector3f(-0.2f, 0.2f, 0.0f);
-
-    Vertices[8] = Vector3f(-0.2f, -0.2f, 0.0f);
-    Vertices[9] = Vector3f(0.2f, -0.2f, 0.0f);
-    Vertices[10] = Vector3f(0.2f, 0.2f, 0.0f);
-    Vertices[11] = Vector3f(-0.2f, 0.2f, 0.0f);
-
- 	glGenBuffers(1, &VBO);
-	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(Vertices), Vertices, GL_STATIC_DRAW);
-}
-
-static void CreateIndexBuffer()
-{
-    unsigned int Indices[] = { 0, 1, 2,
-                               2, 3, 0,
-                               4, 5, 6,
-                               6, 7, 4,
-    8, 9, 10,
-    10, 11, 8};
-
-    glGenBuffers(1, &IBO);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, IBO);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(Indices), Indices, GL_STATIC_DRAW);
 }
 
 static void AddShader(GLuint ShaderProgram, const char* pShaderText, GLenum ShaderType)
@@ -220,23 +176,32 @@ void initPhysEngine()
 {
   eng = new TPhysEngine();
   eng->maxDeltaTime = 0.5f;
-  TPhysObject a(Vector2f(0.0f, -1.0f), Vector2f(0.0f, 0.0f)),
-    b(Vector2f(0.0f, 0.0f), Vector2f(0.0f, -0.7f)),
-    c(Vector2f(0.0f, -1.4f), Vector2f(0.0f, 0.0f));
-  a.m_collider.m_radius = 0.28f;
-  b.m_collider.m_radius = 0.28f;
-  c.m_collider.m_radius = 0.28f;
-  a._mass = c._mass = 2.0f;
-  b._mass = 0.5f;
+  TPhysObject a(Vector2f(0.0f, -0.7f), Vector2f(0.2f, 0.0f));
+  a._mass = 1.0f;
+
+  Vector2f Vertices[4];
+  Vertices[0] = Vector2f(-0.1f, -0.1f);
+  Vertices[1] = Vector2f(0.1f, -0.1f);
+  Vertices[2] = Vector2f(0.1f, 0.1f);
+  Vertices[3] = Vector2f(-0.1f, 0.1f);
+  TMeshCollider mesh(Vertices, 4, Vector2f(0.0f, 0.0f));
+  a.m_collider = mesh;
+  a.m_collider.UpdatePosition(a.center);
+
+  TPhysObject b(Vector2f(0.0f, 0.0f), Vector2f(0.3f, -0.5f));
+  b._mass = 1.0f;
+  //Vertices[1] = Vector2f(0.2f, -0.3f);
+  TMeshCollider mesh2(Vertices, 4, Vector2f(0.0f, 0.0f));
+  b.m_collider = mesh2;
+  b.m_collider.UpdatePosition(b.center);
+
   eng->m_existingObjects.push_back(a);
   eng->m_existingObjects.push_back(b);
-  //eng->m_existingObjects.push_back(c);
   
 }
 
 int main(int argc, char** argv)
 {
-  initPhysEngine();
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_DOUBLE|GLUT_RGBA);
     glutInitWindowSize(WINDOW_WIDTH, WINDOW_HEIGHT);
@@ -258,8 +223,7 @@ int main(int argc, char** argv)
 
     glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 
-    CreateVertexBuffer();
-    CreateIndexBuffer();
+    initPhysEngine();
 
     CompileShaders();
 

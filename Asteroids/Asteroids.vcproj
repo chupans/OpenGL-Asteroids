@@ -218,10 +218,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\TCircle.h"
-				>
-			</File>
-			<File
 				RelativePath=".\TCollider.h"
 				>
 			</File>
