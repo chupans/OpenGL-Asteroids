@@ -21,7 +21,17 @@ public:
     Vector2f& operator+= (const Vector2f other);
     Vector2f& operator-= (const Vector2f other);
     Vector2f& operator*= (float factor);
+    Vector2f operator * (float  factor) const;
+    Vector2f operator / (float  divider) const;
+    Vector2f operator + (const Vector2f &other)	const;
+    Vector2f operator - (const Vector2f &other)	const;
+    Vector2f operator -(void) const;
+    friend bool operator ==(Vector2f const &a, Vector2f const &b) { return (a.getX() == b.getX()) && (a.getY() == b.getY()); };
+    friend bool operator != (Vector2f const &a, Vector2f const &b) {return !(a == b);};
+    friend Vector2f operator * (float factor, const Vector2f& other){ return Vector2f(other.getX() * factor, other.getY() * factor); };
+
     void normalize();
+    Vector2f GetNormalized();
     inline void setX(float x) { _x = x; };
     inline void setY(float y) { _y = y; };
     inline float getX() const { return _x; };
@@ -30,9 +40,37 @@ public:
     static float squareDistanceBetween(Vector2f p1, Vector2f p2);
     static float dotProduct(Vector2f vec1, Vector2f vec2);
     float dotProduct(Vector2f other);
+    void Rotate(Vector2f pivotPoint, float angle);
+
+    static const Vector2f ZERO;
 #ifdef _DEBUG
     void _print();
 #endif
+};
+
+class Matrix2f
+{
+public:
+  float m[2][2];
+  Matrix2f() {};
+  inline void InitIdentity()
+  {
+    m[0][0] = 1.0f; m[0][1] = 0.0f;
+    m[1][0] = 0.0f; m[1][1] = 1.0f;
+  }
+  inline Matrix2f operator*(const Matrix2f &Right) const
+  {
+    Matrix2f result;
+    for (unsigned int i = 0 ; i < 2 ; i++) 
+    {
+      for (unsigned int j = 0 ; j < 2 ; j++) 
+      {
+        result.m[i][j] = m[i][0] * Right.m[0][j] + m[i][1] * Right.m[1][j];
+      }
+    }
+    return result;
+  }
+  void initRotateTransform(float angle);
 };
 
 struct Vector3f

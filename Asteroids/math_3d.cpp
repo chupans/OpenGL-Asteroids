@@ -18,6 +18,8 @@
 
 #include "math_3d.h"
 
+const Vector2f Vector2f::ZERO	(0.0f, 0.0f);
+
 Vector3f Vector3f::Cross(const Vector3f& v) const
 {
     const float _x = y * v.z - z * v.y;
@@ -231,4 +233,54 @@ float Vector2f::dotProduct( Vector2f other )
 float Vector2f::dotProduct( Vector2f vec1, Vector2f vec2 )
 {
   return vec1._x * vec2._y + vec1._y * vec2._y;
+}
+
+Vector2f Vector2f::operator*( float factor ) const
+{
+  return Vector2f(_x * factor, _y * factor);
+}
+
+Vector2f Vector2f::operator/( float divider ) const
+{
+  return Vector2f(_x / divider, _y / divider);
+}
+
+Vector2f Vector2f::operator+( const Vector2f &other ) const
+{
+  return Vector2f(_x + other.getX(), _y + other.getY());
+}
+
+Vector2f Vector2f::operator-( const Vector2f &other ) const
+{
+  return Vector2f(_x - other.getX(), _y - other.getY());
+}
+
+Vector2f Vector2f::operator-( void ) const
+{
+  return Vector2f(-_x, -_y);
+}
+
+Vector2f Vector2f::GetNormalized()
+{
+  Vector2f temp = *this;
+  temp.normalize();
+  return temp;
+}
+
+void Vector2f::Rotate( Vector2f pivotPoint, float angle )
+{
+  float newX, newY;
+  newX = pivotPoint.getX() + (_x - pivotPoint.getX()) * cos(angle) - (_y - pivotPoint.getY()) * sin(angle); 
+  newY = pivotPoint.getY() + (_y - pivotPoint.getY()) * cos(angle) + (_x - pivotPoint.getX()) * sin(angle);
+  _x = newX;
+  _y = newY;
+}
+
+
+
+
+void Matrix2f::initRotateTransform( float angle )
+{
+  m[0][0] = cosf(angle); m[0][1] = -sinf(angle);
+  m[1][0] = sinf(angle); m[1][1] = cosf(angle);
 }

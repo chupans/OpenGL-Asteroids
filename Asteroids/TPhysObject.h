@@ -9,7 +9,7 @@ public:
   Vector2f speed; // ускорение
   Vector2f speedChange;   //сила
   float angle;   // текущий угол в радианах
-  float angularVelocity;   // угловое ускорение в радианах
+  float angularSpeed;   // угловая скорость в радианах
   float _mass;   // масса
   float _friction;   // трение
   bool isStatic;
@@ -22,4 +22,5 @@ public:
   void ApplyImpulse(Vector2f j, Vector2f r);
   void updatePosition(float deltaTime);
   void updateSpeed(float deltaTime);
+  float GetMomentumArmLength(Vector2f armPoint);
 };

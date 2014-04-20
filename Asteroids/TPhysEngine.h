@@ -10,7 +10,7 @@ public:
 
 private:
   void findCollisions();
-  void fixCollisions(TPhysObject &obj1, TPhysObject &obj2);
+  void fixCollisions(TPhysObject &obj1, TPhysObject &obj2, Vector2f collidePoint);
 
 public:
   float maxDeltaTime;

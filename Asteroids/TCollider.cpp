@@ -75,6 +75,7 @@ TMeshCollider::TMeshCollider( Vector2f points[], unsigned int count, Vector2f ce
 {
   unsigned int i;
   this->vbo = 0;
+  rotMatrix.InitIdentity();
   vector<unsigned int> indices;
   indices.push_back(0);
   for (i = 0; i < count; i++)
@@ -110,16 +111,42 @@ bool TMeshCollider::IsPointInside( Vector2f point )
   return true;
 }
 
-bool TMeshCollider::DoCollideWith( TMeshCollider other )
+bool TMeshCollider::DoCollideWith(TMeshCollider other)
+{
+  Vector2f temp = Vector2f::ZERO;
+  return DoCollideWith(other, temp);
+}
+
+bool TMeshCollider::DoCollideWith( TMeshCollider other, Vector2f &collidePoint )
 {
   vector<TEdge>::iterator edgesIt;
+  vector<Vector2f> points;
+  vector<Vector2f>::iterator pIt;
+  bool doTheyCollide = false;
 
-  for (edgesIt = _edges.begin(); edgesIt < _edges.end(); edgesIt++)
+  for (edgesIt = this->_edges.begin(); edgesIt < this->_edges.end(); edgesIt++)
   {
     if (other.IsPointInside(edgesIt->_p1))
-      return true;
+    {
+      points.push_back(edgesIt->_p1);
+      doTheyCollide = true;
+    }
   }
-  return false;
+  for (edgesIt = other._edges.begin(); edgesIt < other._edges.end(); edgesIt++)
+  {
+    if (this->IsPointInside(edgesIt->_p1))
+    {
+      points.push_back(edgesIt->_p1);
+      doTheyCollide = true;
+    }
+  }
+
+  collidePoint = Vector2f::ZERO;
+  for (pIt = points.begin(); pIt < points.end(); pIt++)
+  {
+    collidePoint += *pIt/points.size();
+  }
+  return doTheyCollide;
 }
 
 void TMeshCollider::Render()
@@ -145,4 +172,16 @@ void TMeshCollider::UpdatePosition( Vector2f shift )
     edgesIt->_p2 += shift;
   }
   this->m_center += shift;
+}
+
+void TMeshCollider::Rotate( float angle )
+{
+  vector<TEdge>::iterator edgeIt;
+
+  for (edgeIt = _edges.begin(); edgeIt < _edges.end(); edgeIt++)
+  {
+    edgeIt->_p1.Rotate(m_center, angle);
+    edgeIt->_p2.Rotate(m_center, angle);
+  }
+  rotMatrix.initRotateTransform(angle);
 }

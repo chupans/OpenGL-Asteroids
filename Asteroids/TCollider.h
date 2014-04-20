@@ -41,14 +41,17 @@ class TMeshCollider
 public:
   TMeshCollider();
   TMeshCollider(Vector2f points[], unsigned int count, Vector2f center);
-  virtual bool IsPointInside( Vector2f point);
-  virtual bool DoCollideWith( TMeshCollider other);
+  bool IsPointInside( Vector2f point);
+  bool DoCollideWith( TMeshCollider other, Vector2f &collidePoint);
+  bool DoCollideWith(TMeshCollider other);
   Vector2f GetCollissionVector(TMeshCollider other);
   void UpdatePosition(Vector2f shift);
   void Render();
-
+  void Rotate( float angularSpeed );
   vector<TEdge> _edges;
   Vector2f m_center;
   GLuint vbo;
   GLuint ibo;
+  Matrix2f rotMatrix;
+  
 };

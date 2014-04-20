@@ -16,6 +16,7 @@
 GLuint VBO;
 GLuint IBO;
 GLuint gWVPLocation;
+GLuint gRotLocation;
 
 TPhysEngine *eng;
 
@@ -26,13 +27,14 @@ static const char* pVS = "                                                      
                                                                                     \n\
 layout (location = 0) in vec2 Position;                                             \n\
                                                                                     \n\
+uniform mat2 gRot;                                                                  \n\
 uniform mat4 gWVP;                                                                  \n\
                                                                                     \n\
 out vec4 Color;                                                                     \n\
                                                                                     \n\
 void main()                                                                         \n\
 {                                                                                   \n\
-    gl_Position = gWVP * vec4(Position, 0.0, 1.0);                                  \n\
+    gl_Position = gWVP *  vec4( gRot * Position, 0.0, 1.0);                         \n\
     Color = vec4(clamp(Position*5, 0.0, 1.0), 0.5, 1.0);                            \n\
 }";
 
@@ -65,14 +67,16 @@ static void RenderSceneCB()
 
     Pipeline p;
     //p.Rotate(0.0f, Scale, 0.0f);
+    //
+    p.SetPerspectiveProj(60.0f, WINDOW_WIDTH, WINDOW_HEIGHT, 1.0f, 100.0f);
     vector<TPhysObject>::iterator it;
     for (it = eng->m_existingObjects.begin(), start = 0, end = 6; it < eng->m_existingObjects.end(); it++, start += 6, end += 6)
     {
-      p.WorldPos(it->center.getX(), it->center.getY(), 3.0f);
       p.SetCamera(pGameCamera->GetPos(), pGameCamera->GetTarget(), pGameCamera->GetUp());
-      p.SetPerspectiveProj(60.0f, WINDOW_WIDTH, WINDOW_HEIGHT, 1.0f, 100.0f);
+      p.WorldPos(it->center.getX(), it->center.getY(), 3.0f);
 
       glUniformMatrix4fv(gWVPLocation, 1, GL_TRUE, (const GLfloat*)p.GetTrans());
+      glUniformMatrix2fv(gRotLocation, 1, GL_FALSE, (const GLfloat*)&(it->m_collider.rotMatrix));
 
       it->m_collider.Render();
     }
@@ -171,13 +175,16 @@ static void CompileShaders()
 
     gWVPLocation = glGetUniformLocation(ShaderProgram, "gWVP");
     assert(gWVPLocation != 0xFFFFFFFF);
+
+    gRotLocation = glGetUniformLocation(ShaderProgram, "gRot");
+    assert(gRotLocation != 0xFFFFFFFF);
 }
 void initPhysEngine()
 {
   eng = new TPhysEngine();
   eng->maxDeltaTime = 0.5f;
-  TPhysObject a(Vector2f(0.0f, -0.7f), Vector2f(0.2f, 0.0f));
-  a._mass = 1.0f;
+  TPhysObject a(Vector2f(0.0f, -0.7f), Vector2f(2.5f, 0.5f));
+  a._mass = 1.2f;
 
   Vector2f Vertices[4];
   Vertices[0] = Vector2f(-0.1f, -0.1f);
@@ -188,15 +195,67 @@ void initPhysEngine()
   a.m_collider = mesh;
   a.m_collider.UpdatePosition(a.center);
 
-  TPhysObject b(Vector2f(0.0f, 0.0f), Vector2f(0.3f, -0.5f));
-  b._mass = 1.0f;
+  TPhysObject b(Vector2f(1.0f, -1.0f), Vector2f(1.6f, -1.5f));
+  b._mass = 1.6f;
   //Vertices[1] = Vector2f(0.2f, -0.3f);
   TMeshCollider mesh2(Vertices, 4, Vector2f(0.0f, 0.0f));
   b.m_collider = mesh2;
   b.m_collider.UpdatePosition(b.center);
 
+  TPhysObject c(Vector2f(0.0f, -1.0f), Vector2f(1.6f, 1.5f));
+  c._mass = 1.8f;
+  //Vertices[1] = Vector2f(0.2f, -0.3f);
+  TMeshCollider mesh3(Vertices, 4, Vector2f(0.0f, 0.0f));
+  c.m_collider = mesh3;
+  c.m_collider.UpdatePosition(c.center);
+
+  TPhysObject boundaryBottom(Vector2f(0.0f, -1.45f), Vector2f::ZERO);
+  boundaryBottom.isStatic = true;
+  Vector2f vert[4];
+  vert[0] = Vector2f(-1.8f, 0.05f);
+  vert[1] = Vector2f(-1.8f, -0.05f);
+  vert[2] = Vector2f(1.8f, -0.05f);
+  vert[3] = Vector2f(1.8f, 0.05f);
+  TMeshCollider boundaryMeshBottom(vert, 4, Vector2f::ZERO);
+  boundaryMeshBottom.UpdatePosition(boundaryBottom.center);
+  boundaryBottom.m_collider = boundaryMeshBottom;
+
+
+  TPhysObject boundaryTop(Vector2f(0.0f, 1.45f), Vector2f::ZERO);
+  boundaryTop.isStatic = true;
+  TMeshCollider boundaryMeshTop(vert, 4, Vector2f::ZERO);
+  boundaryMeshTop.UpdatePosition(boundaryTop.center);
+  boundaryTop.m_collider = boundaryMeshTop;
+
+  TPhysObject boundaryLeft(Vector2f(-1.45f, 0.0f), Vector2f::ZERO);
+  boundaryLeft.isStatic = true;
+  vert[0] = Vector2f(-0.05f, -1.8f);
+  vert[1] = Vector2f(0.05f, -1.8f);
+  vert[2] = Vector2f(0.05f, 1.8f);
+  vert[3] = Vector2f(-0.05f, 1.8f);
+  TMeshCollider boundaryMeshLeft(vert, 4, Vector2f::ZERO);
+  boundaryMeshLeft.UpdatePosition(boundaryLeft.center);
+  boundaryLeft.m_collider = boundaryMeshLeft;
+
+  TPhysObject boundaryRight(Vector2f(+1.45f, 0.0f), Vector2f::ZERO);
+  boundaryRight.isStatic = true;
+  TMeshCollider boundaryMeshRight(vert, 4, Vector2f::ZERO);
+  boundaryMeshRight.UpdatePosition(boundaryRight.center);
+  boundaryRight.m_collider = boundaryMeshRight;
+
+  boundaryTop.angle = boundaryBottom.angle = 0;   //HACK:
+  boundaryLeft.angle = boundaryRight.angle = 90;
+
+  a.angularSpeed = b.angularSpeed = c.angularSpeed = 1.11f;
+  a.angle = b.angle = c.angle = 0.0f;
+
   eng->m_existingObjects.push_back(a);
   eng->m_existingObjects.push_back(b);
+  eng->m_existingObjects.push_back(c);
+  eng->m_existingObjects.push_back(boundaryBottom);
+  eng->m_existingObjects.push_back(boundaryTop);
+  eng->m_existingObjects.push_back(boundaryLeft);
+  eng->m_existingObjects.push_back(boundaryRight);
   
 }
 
