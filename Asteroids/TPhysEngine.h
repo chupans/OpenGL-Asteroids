@@ -1,4 +1,4 @@
-#include "TPhysObject.h"
+#include "IBody.h"
 #include <vector>
 using namespace std;
 
@@ -10,10 +10,11 @@ public:
 
 private:
   void findCollisions();
-  void fixCollisions(TPhysObject &obj1, TPhysObject &obj2, Vector2f collidePoint);
+  void FixCollisions(IBody *obj1, IBody *obj2, Vector2f collidePoint);
 
 public:
+  int nCollision;
   float maxDeltaTime;
-  vector<TPhysObject> m_existingObjects;
+  vector<IBody*> m_existingBodies;
 
 };

@@ -232,7 +232,7 @@ float Vector2f::dotProduct( Vector2f other )
 
 float Vector2f::dotProduct( Vector2f vec1, Vector2f vec2 )
 {
-  return vec1._x * vec2._y + vec1._y * vec2._y;
+  return vec1._x * vec2._x + vec1._y * vec2._y;
 }
 
 Vector2f Vector2f::operator*( float factor ) const
@@ -270,10 +270,23 @@ Vector2f Vector2f::GetNormalized()
 void Vector2f::Rotate( Vector2f pivotPoint, float angle )
 {
   float newX, newY;
-  newX = pivotPoint.getX() + (_x - pivotPoint.getX()) * cos(angle) - (_y - pivotPoint.getY()) * sin(angle); 
-  newY = pivotPoint.getY() + (_y - pivotPoint.getY()) * cos(angle) + (_x - pivotPoint.getX()) * sin(angle);
+  newX = pivotPoint.getX() + (_x - pivotPoint.getX()) * cos(angle) + (_y - pivotPoint.getY()) * sin(angle); 
+  newY = pivotPoint.getY() + (_y - pivotPoint.getY()) * cos(angle) - (_x - pivotPoint.getX()) * sin(angle);
   _x = newX;
   _y = newY;
+}
+
+float Vector2f::GetLength()
+{
+  return sqrtf(_x*_x + _y*_y);
+}
+
+float Vector2f::zCrossProduct( Vector2f a, Vector2f b, Vector2f c )
+{
+  Vector2f ab = b - a;
+  Vector2f bc = c - b;
+
+  return (ab.getX() * bc.getY() - ab.getY() * bc.getX());
 }
 
 
@@ -282,5 +295,5 @@ void Vector2f::Rotate( Vector2f pivotPoint, float angle )
 void Matrix2f::initRotateTransform( float angle )
 {
   m[0][0] = cosf(angle); m[0][1] = -sinf(angle);
-  m[1][0] = sinf(angle); m[1][1] = cosf(angle);
+  m[1][0] = +sinf(angle); m[1][1] = cosf(angle);
 }

@@ -188,17 +188,33 @@
 				>
 			</File>
 			<File
-				RelativePath=".\TCollider.cpp"
-				>
-			</File>
-			<File
 				RelativePath=".\TPhysEngine.cpp"
 				>
 			</File>
-			<File
-				RelativePath=".\TPhysObject.cpp"
+			<Filter
+				Name="Colliders"
 				>
-			</File>
+				<File
+					RelativePath=".\TBoundaryCollider.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\TMeshCollider.cpp"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="Bodies"
+				>
+				<File
+					RelativePath=".\CBoundaryBody.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\CPolyBody.cpp"
+					>
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="Заголовочные файлы"
@@ -210,6 +226,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Functions.h"
+				>
+			</File>
+			<File
 				RelativePath=".\math_3d.h"
 				>
 			</File>
@@ -218,17 +238,45 @@
 				>
 			</File>
 			<File
-				RelativePath=".\TCollider.h"
+				RelativePath=".\TConstants.h"
 				>
 			</File>
 			<File
 				RelativePath=".\TPhysEngine.h"
 				>
 			</File>
-			<File
-				RelativePath=".\TPhysObject.h"
+			<Filter
+				Name="Colliders"
 				>
-			</File>
+				<File
+					RelativePath=".\ICollider.h"
+					>
+				</File>
+				<File
+					RelativePath=".\TBoundaryCollider.h"
+					>
+				</File>
+				<File
+					RelativePath=".\TMeshCollider.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="Bodies"
+				>
+				<File
+					RelativePath=".\CBoundaryBody.h"
+					>
+				</File>
+				<File
+					RelativePath=".\CPolyBody.h"
+					>
+				</File>
+				<File
+					RelativePath=".\IBody.h"
+					>
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="Файлы ресурсов"

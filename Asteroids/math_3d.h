@@ -39,7 +39,9 @@ public:
     static float distanceBetween(Vector2f p1, Vector2f p2);
     static float squareDistanceBetween(Vector2f p1, Vector2f p2);
     static float dotProduct(Vector2f vec1, Vector2f vec2);
+    static float zCrossProduct(Vector2f a, Vector2f b, Vector2f c);
     float dotProduct(Vector2f other);
+    float GetLength();
     void Rotate(Vector2f pivotPoint, float angle);
 
     static const Vector2f ZERO;
