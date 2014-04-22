@@ -60,7 +60,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="freeglut.lib glew32.lib"
+				AdditionalDependencies="glew32.lib freeglut.lib"
 				LinkIncremental="2"
 				GenerateDebugInformation="true"
 				SubSystem="1"
@@ -176,6 +176,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\CCollision.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Functions.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\main.cpp"
 				>
 			</File>
@@ -188,6 +196,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\TConstants.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\TPhysEngine.cpp"
 				>
 			</File>
@@ -195,11 +207,15 @@
 				Name="Colliders"
 				>
 				<File
-					RelativePath=".\TBoundaryCollider.cpp"
+					RelativePath=".\CBoundaryCollider.cpp"
 					>
 				</File>
 				<File
-					RelativePath=".\TMeshCollider.cpp"
+					RelativePath=".\CCompositeCollider.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\CPolyCollider.cpp"
 					>
 				</File>
 			</Filter>
@@ -208,6 +224,10 @@
 				>
 				<File
 					RelativePath=".\CBoundaryBody.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\CCompositeBody.cpp"
 					>
 				</File>
 				<File
@@ -223,6 +243,10 @@
 			>
 			<File
 				RelativePath=".\camera.h"
+				>
+			</File>
+			<File
+				RelativePath=".\CCollision.h"
 				>
 			</File>
 			<File
@@ -249,15 +273,19 @@
 				Name="Colliders"
 				>
 				<File
+					RelativePath=".\CBoundaryCollider.h"
+					>
+				</File>
+				<File
+					RelativePath=".\CCompositeCollider.h"
+					>
+				</File>
+				<File
+					RelativePath=".\CPolyCollider.h"
+					>
+				</File>
+				<File
 					RelativePath=".\ICollider.h"
-					>
-				</File>
-				<File
-					RelativePath=".\TBoundaryCollider.h"
-					>
-				</File>
-				<File
-					RelativePath=".\TMeshCollider.h"
 					>
 				</File>
 			</Filter>
@@ -266,6 +294,10 @@
 				>
 				<File
 					RelativePath=".\CBoundaryBody.h"
+					>
+				</File>
+				<File
+					RelativePath=".\CCompositeBody.h"
 					>
 				</File>
 				<File

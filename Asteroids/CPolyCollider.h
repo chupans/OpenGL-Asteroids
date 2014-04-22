@@ -3,13 +3,7 @@
 #include <vector>
 #include "ICollider.h"
 
-using namespace std;
 
-enum COLLIDER_TYPE
-{
-  COLLIDER_CIRCLE,
-  COLLIDER_MESH
-};
 
 class TEdge
 {
@@ -24,17 +18,19 @@ public:
   Vector2f _p1, _p2;
 };
 
-class TMeshCollider : ICollider
+class CPolyCollider : public ICollider
 {
 public:
-  TMeshCollider(Vector2f points[], unsigned int count, Vector2f center);
-  virtual bool IsPointInside (Vector2f point);
+  CPolyCollider(Vector2f points[], unsigned int count, Vector2f position);
+  virtual bool ContainPoint (Vector2f point);
   virtual bool DoCollideWith (ICollider *other, Vector2f &collidePoint);
   virtual bool DoCollideWith (ICollider *other);
   virtual Vector2f GetCollissionVector(ICollider *other);
   virtual void UpdatePosition(Vector2f shift);
   virtual void Rotate( float angle, float delta );
+  virtual bool ProbablyCollideWith (ICollider *other);
+  virtual float GetCircumCircleRadius();
+  virtual Vector2f GetPosition();
 
-  vector<TEdge> _edges;
-  Vector2f m_center;  
+  std::vector<TEdge> _edges; 
 };

@@ -1,6 +1,6 @@
 #pragma once
 #include "IBody.h"
-#include "TBoundaryCollider.h"
+#include "CBoundaryCollider.h"
 #include "math_3d.h"
 
 class CBoundaryBody : IBody
@@ -30,7 +30,7 @@ public:
   virtual void SetAngularSpeedChange( float angSpeedChange );
 
 private:
-  TBoundaryCollider *m_collider;
+  CBoundaryCollider *m_collider;
   GLuint m_vbo, m_ibo;
   int m_pointsCount;
 };

@@ -1,8 +1,8 @@
 #pragma once
 #include "IBody.h"
-#include "CPolyCollider.h"
+#include "CCompositeCollider.h"
 
-class CPolyBody : public IBody
+class CCompositeBody : public IBody
 {
 private:
   Vector2f m_speed;
@@ -19,27 +19,26 @@ private:
   Matrix2f m_rotMatrix;
 
 public:
-  CPolyBody(Vector2f points[], unsigned int count, Vector2f position, Vector2f startSpeed, bool isStatic, float angularSpeed);
-  ~CPolyBody();
+  CCompositeBody(void);
+  ~CCompositeBody(void);
+
   virtual void Render();
+  virtual Vector2f GetPosition();
+  virtual void SetAngularSpeedChange( float angSpeedChange );
   virtual void RenderDebug( GLint loc );
   virtual void UpdatePositionAndAngle( float deltaTime );
-  virtual Vector2f GetSpeed();
-  virtual void UpdateSpeed();
-  virtual void UpdatePosition( float deltaTime );
-  virtual float GetMass();
-  //virtual float GetMomentumArmLength( Vector2f armPoint, Vector2f incImpulse );
-  virtual ICollider* GetCollider();
-  virtual Vector2f GetPosition();
   virtual bool IsStatic();
-  virtual void SetSpeedChange( Vector2f speedChange );
-  virtual void SetAngle( float angle );
-  virtual void MultiplySpeedBy( float factor );
-  virtual void AddToAngularSpeed( float angSpeed );
-  virtual float GetAngle();
+  virtual Vector2f GetSpeed();
   virtual Matrix2f GetRotMatrix();
+  virtual void UpdateSpeed();
+  virtual ICollider* GetCollider();
   virtual float GetAngularSpeed();
-
-  virtual void SetAngularSpeedChange( float angSpeedChange );
+  virtual void SetAngle( float angle );
+  virtual void SetSpeedChange( Vector2f speedChange );
+  virtual void MultiplySpeedBy( float factor );
+  virtual void UpdatePosition( float deltaTime );
+  virtual void AddToAngularSpeed( float angSpeed );
+  virtual float GetMass();
+  virtual float GetAngle();
 
 };

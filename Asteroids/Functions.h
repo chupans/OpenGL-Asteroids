@@ -1,3 +1,6 @@
+#pragma once
+#include "math_3d.h"
+
 template <typename T>
 T Clamp (T const val, T const lowerBound, T const topBound)
 {
@@ -9,4 +12,6 @@ T Clamp (T const val, T const lowerBound, T const topBound)
     clampedVal += betweenBounds;
 
   return clampedVal;
-}
+};
+
+void GenerateConvexPolygon(int count, Vector2f resultPoints[]);

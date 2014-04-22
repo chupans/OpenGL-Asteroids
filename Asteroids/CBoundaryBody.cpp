@@ -8,7 +8,7 @@ CBoundaryBody::CBoundaryBody(Vector2f startPoint, Vector2f endPoint, Vector2f po
   points[1] = endPoint;
   m_pointsCount = 2;
 
-  m_collider = new TBoundaryCollider(startPoint, endPoint, pointInsideBody);
+  m_collider = new CBoundaryCollider(startPoint, endPoint, pointInsideBody);
 
   glGenBuffers(1, &(m_vbo));
   glBindBuffer(GL_ARRAY_BUFFER, m_vbo);

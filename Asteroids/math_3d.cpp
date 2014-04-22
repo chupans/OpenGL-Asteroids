@@ -209,6 +209,15 @@ Vector2f& Vector2f::operator*=( float factor )
 	return *this;
 }
 
+
+Vector2f& Vector2f::operator/=( float divider )
+{
+  this->_x /= divider;
+  this->_y /= divider;
+  return *this;
+}
+
+
 float Vector2f::distanceBetween( Vector2f p1, Vector2f p2 )
 {
   return sqrtf(squareDistanceBetween(p1, p2));

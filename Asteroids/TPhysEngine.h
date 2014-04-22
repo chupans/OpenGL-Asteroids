@@ -1,6 +1,7 @@
+#pragma once
 #include "IBody.h"
+#include "CCollision.h"
 #include <vector>
-using namespace std;
 
 class TPhysEngine
 {
@@ -15,6 +16,7 @@ private:
 public:
   int nCollision;
   float maxDeltaTime;
-  vector<IBody*> m_existingBodies;
+  std::vector<IBody*> m_existingBodies;
+  std::vector<CCollision> m_existingCollissions;
 
 };

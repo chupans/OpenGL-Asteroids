@@ -11,6 +11,7 @@
 #include "TPhysEngine.h"
 #include "CBoundaryBody.h"
 #include "CPolyBody.h"
+#include "Functions.h"
 
 #define WINDOW_WIDTH  1024
 #define WINDOW_HEIGHT 768
@@ -24,6 +25,8 @@ GLuint isRealLocation;
 TPhysEngine *eng;
 
 Camera* pGameCamera = NULL;
+
+using namespace std;
 
 static const char* pVS = "                                                          \n\
 #version 330                                                                        \n\
@@ -201,6 +204,17 @@ void initPhysEngine()
   eng = new TPhysEngine();
   eng->maxDeltaTime = 0.5f;
 
+    srand(time(NULL));
+  Vector2f abr[17];
+  GenerateConvexPolygon(17, abr);
+  CPolyBody *a = new CPolyBody(abr, 17, Vector2f(0.0f, -0.7f), Vector2f(1.0f, -1.0f), false, 0.0f);
+
+  GenerateConvexPolygon(17, abr);
+  CPolyBody *b = new CPolyBody(abr, 17, Vector2f(1.0f, 1.0f), Vector2f(1.0f, 1.0f), false, 0.0f);
+
+  GenerateConvexPolygon(17, abr);
+  CPolyBody *c = new CPolyBody(abr, 17, Vector2f(0.0f, 0.7f), Vector2f(-1.0f, 1.0f), false, 0.0f);
+
   Vector2f Vertices[5];
   Vertices[0] = Vector2f(-0.1f, -0.1f);
   Vertices[1] = Vector2f(0.1f, -0.1f);
@@ -232,12 +246,11 @@ int test = 3;
 // 
 //   CPolyBody *b = new CPolyBody(Vertices2, 4, Vector2f(0.0f, 0.0f), Vector2f(0.0f, 0.0f), false, 0.0f);
 
-  CPolyBody *a = new CPolyBody(Vertices, 4, Vector2f(0.0f, -0.7f), Vector2f(2.5f, 0.5f), false, 0.0f);
+  //CPolyBody *a = new CPolyBody(Vertices, 4, Vector2f(0.0f, -0.7f), Vector2f(2.5f, 0.5f), false, 0.0f);
 
   Vertices[3] = Vector2f(-0.15f, 0.15f);
-  CPolyBody *b = new CPolyBody(Vertices, 5, Vector2f(0.5f, -0.5f), Vector2f(1.6f, -1.5f), false, 0.0f);
 
-  CPolyBody *c = new CPolyBody(Vertices, 4, Vector2f(0.5f, 0.5f), Vector2f(1.6f, 1.5f), false, 0.0f);
+  
 
   Vertices[0] = Vector2f(-0.15f, -0.1f);
   Vertices[1] = Vector2f(0.2f, -0.15f);
@@ -257,7 +270,7 @@ int test = 3;
   eng->m_existingBodies.push_back((IBody*)a);
   eng->m_existingBodies.push_back((IBody*)b);
   eng->m_existingBodies.push_back((IBody*)c);
-  eng->m_existingBodies.push_back((IBody*)d);
+  //eng->m_existingBodies.push_back((IBody*)d);
   eng->m_existingBodies.push_back((IBody*)bottom);
   eng->m_existingBodies.push_back((IBody*)top);
   eng->m_existingBodies.push_back((IBody*)left);

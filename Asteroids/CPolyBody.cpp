@@ -1,14 +1,16 @@
 #include "TConstants.h"
-#include "CPolyBody.h"
 #include "Functions.h"
+#include "CPolyBody.h"
+
+using namespace std;
 
 void CPolyBody::Render()
 {
   glEnableVertexAttribArray(0);
-  glBindBuffer(GL_ARRAY_BUFFER, vbo);
+  glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
   glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, 0);
 
-  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
+  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_ibo);
 
   glDrawElements(GL_LINE_STRIP, m_collider->_edges.size() + 1, GL_UNSIGNED_INT, 0);
 
@@ -25,14 +27,14 @@ void CPolyBody::RenderDebug (GLint loc)
     points.push_back(it->_p1);
   }
 
-  glBindBuffer(GL_ARRAY_BUFFER, realVbo);
+  glBindBuffer(GL_ARRAY_BUFFER, m_debugVbo);
   glBufferData(GL_ARRAY_BUFFER, sizeof(Vector2f)*(points.size()), &points[0], GL_DYNAMIC_DRAW);
 
   glUniform1i(loc, (GLint)1);
   glEnableVertexAttribArray(0);
   glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, 0);
 
-  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
+  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_ibo);
 
   glDrawElements(GL_LINE_STRIP, points.size()+1, GL_UNSIGNED_INT, 0);
 
@@ -85,18 +87,18 @@ float CPolyBody::GetMass()
   return m_mass;
 }
 
-float CPolyBody::GetMomentumArmLength( Vector2f armPoint, Vector2f incImpulse )
-{
-  Vector2f armVector = m_collider->m_center - armPoint;
-  return armVector.GetLength();
-}
+// float CPolyBody::GetMomentumArmLength( Vector2f armPoint, Vector2f incImpulse )
+// {
+//   Vector2f armVector = m_collider->m_center - armPoint;
+//   return armVector.GetLength();
+// }
 
 ICollider* CPolyBody::GetCollider()
 {
   return (ICollider*) m_collider;
 }
 
-CPolyBody::CPolyBody( Vector2f points[], unsigned int count, Vector2f center, Vector2f startSpeed, bool isStatic, float angularSpeed )
+CPolyBody::CPolyBody( Vector2f points[], unsigned int count, Vector2f position, Vector2f startSpeed, bool isStatic, float angularSpeed )
 {
   float area = 0;
   unsigned int i;
@@ -107,7 +109,7 @@ CPolyBody::CPolyBody( Vector2f points[], unsigned int count, Vector2f center, Ve
   m_isStatic = isStatic;
   m_angle = 0;
   m_angularSpeed = angularSpeed;
-  m_collider = new TMeshCollider(points, count, center);
+  m_collider = new CPolyCollider(points, count, position);
   m_angularSpeedChange = 0;
   indices.push_back(0);
   for (i = 0; i < count; i++)
@@ -123,28 +125,24 @@ CPolyBody::CPolyBody( Vector2f points[], unsigned int count, Vector2f center, Ve
       area += (points[i].getX() + points[0].getX()) * (points[i].getY() - points[0].getY());
     }
   }
-  float test = Vector2f::distanceBetween(center, points[0]);
-  test = Vector2f::distanceBetween(center, points[1]);
-  test = Vector2f::distanceBetween(center, points[2]);
-  test = Vector2f::distanceBetween(center, points[3]);
 
   m_mass = fabs(area);
 
-  glGenBuffers(1, &(vbo));
-  glBindBuffer(GL_ARRAY_BUFFER, vbo);
+  glGenBuffers(1, &(m_vbo));
+  glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
   glBufferData(GL_ARRAY_BUFFER, sizeof(Vector2f)*(count), points, GL_STATIC_DRAW);
 
-  glGenBuffers(1, &(ibo));
-  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
+  glGenBuffers(1, &(m_ibo));
+  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_ibo);
   glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int)*indices.size(), &indices[0], GL_STATIC_DRAW);
 
-  glGenBuffers(1, &(realVbo));
-  glBindBuffer(GL_ARRAY_BUFFER, realVbo);
+  glGenBuffers(1, &(m_debugVbo));
+  glBindBuffer(GL_ARRAY_BUFFER, m_debugVbo);
 }
 
 Vector2f CPolyBody::GetPosition()
 {
-  return m_collider->m_center;
+  return m_collider->GetPosition();
 }
 
 CPolyBody::~CPolyBody()

@@ -1,4 +1,6 @@
-#include "TMeshCollider.h"
+#include "CPolyCollider.h"
+
+using namespace std;
 
 
 
@@ -42,19 +44,32 @@ void TEdge::UpdatePosition( Vector2f shift )
 
 
 //Обход точек против часовой стрелки, создание соответствующих граней. Инициализация буффера вершин и индексов.
-TMeshCollider::TMeshCollider( Vector2f points[], unsigned int count, Vector2f center )
+CPolyCollider::CPolyCollider( Vector2f points[], unsigned int count, Vector2f position )
 {
   unsigned int i;
+  float distance;
+  Vector2f center = Vector2f::ZERO;
+  m_CircumCircleRadius = 0;
+  for (i = 0; i < count; i++)
+    center += points[i];
+  center /= count;
+
   for (i = 0; i < count; i++)
   {
+    distance = Vector2f::distanceBetween(points[i] + center, center);
+    if (distance > m_CircumCircleRadius)
+      m_CircumCircleRadius = distance;
+
     if (i+1 < count)
       _edges.push_back(TEdge(points[i] + center, points[i+1] + center));
   }
   _edges.push_back(TEdge(points[count-1] + center, points[0] + center));
   this->m_center = center;
+  if (center != position)
+    UpdatePosition(position - center);
 }
 
-bool TMeshCollider::IsPointInside( Vector2f point )
+bool CPolyCollider::ContainPoint( Vector2f point )
 {
   vector<TEdge>::iterator edgesIt;
 
@@ -66,7 +81,7 @@ bool TMeshCollider::IsPointInside( Vector2f point )
   return true;
 }
 
-bool TMeshCollider::DoCollideWith( ICollider *other, Vector2f &collidePoint )
+bool CPolyCollider::DoCollideWith( ICollider *other, Vector2f &collidePoint )
 {
   vector<TEdge>::iterator edgesIt;
   vector<Vector2f> points;
@@ -75,7 +90,7 @@ bool TMeshCollider::DoCollideWith( ICollider *other, Vector2f &collidePoint )
 
   for (edgesIt = this->_edges.begin(); edgesIt < this->_edges.end(); edgesIt++)
   {
-    if (other->IsPointInside(edgesIt->_p1))
+    if (other->ContainPoint(edgesIt->_p1))
     {
       points.push_back(edgesIt->_p1);
       doTheyCollide = true;
@@ -90,13 +105,13 @@ bool TMeshCollider::DoCollideWith( ICollider *other, Vector2f &collidePoint )
   return doTheyCollide;
 }
 
-bool TMeshCollider::DoCollideWith( ICollider *other )
+bool CPolyCollider::DoCollideWith( ICollider *other )
 {
   Vector2f temp = Vector2f :: ZERO;
   return this->DoCollideWith(other, temp);
 }
 
-void TMeshCollider::UpdatePosition( Vector2f shift )
+void CPolyCollider::UpdatePosition( Vector2f shift )
 {
   vector<TEdge>::iterator edgesIt;
   for (edgesIt = _edges.begin(); edgesIt < _edges.end(); edgesIt++)
@@ -106,7 +121,7 @@ void TMeshCollider::UpdatePosition( Vector2f shift )
   this->m_center += shift;
 }
 
-void TMeshCollider::Rotate( float angle, float delta )
+void CPolyCollider::Rotate( float angle, float delta )
 {
   vector<TEdge>::iterator edgeIt;
 
@@ -116,8 +131,30 @@ void TMeshCollider::Rotate( float angle, float delta )
   }
 }
 
-Vector2f TMeshCollider::GetCollissionVector( ICollider *other )
+Vector2f CPolyCollider::GetCollissionVector( ICollider *other )
 {
   //FIXME:
   return Vector2f::ZERO;
+}
+
+//Быстрая проверка для двух коллайдеров
+bool CPolyCollider::ProbablyCollideWith( ICollider *other )
+{
+  float distance;
+  distance = Vector2f::squareDistanceBetween(m_center, other->GetPosition());
+  distance -= GetCircumCircleRadius() * GetCircumCircleRadius() + other->GetCircumCircleRadius() * other->GetCircumCircleRadius();
+  if (distance > 0)
+    return false;
+  else
+    return true;
+}
+
+float CPolyCollider::GetCircumCircleRadius()
+{
+  return m_CircumCircleRadius;
+}
+
+Vector2f CPolyCollider::GetPosition()
+{
+  return m_center;
 }

@@ -1,5 +1,7 @@
 #include "TPhysEngine.h"
 
+using namespace std;
+
 void TPhysEngine::physStep( float deltaTime )
 {
   if (deltaTime > maxDeltaTime)
@@ -21,6 +23,7 @@ void TPhysEngine::physStep( float deltaTime )
         {
           if ((*objIt)->GetCollider()->DoCollideWith((*otherObjIt)->GetCollider(), collidePoint))//FIXME: Вызывать для обоих?
           {
+            m_existingCollissions.push_back(CCollision(*objIt, *otherObjIt));
             FixCollisions(*objIt, *otherObjIt, collidePoint);
             //process collission
             (*objIt)->wasProcessed = true;
