@@ -12,14 +12,15 @@ private:
   float m_angularSpeedChange;     // изменение изменения угловой скорости на следующем шаге (Lol) FIXME
   float m_mass;
   bool m_isStatic;
-  CPolyCollider *m_collider;
+  CCompositeCollider *m_collider;
   bool wasProcessed;
   GLuint m_vbo, m_debugVbo;
   GLuint m_ibo;
   Matrix2f m_rotMatrix;
+  int indicesCount;
 
 public:
-  CCompositeBody(void);
+  CCompositeBody(Vector2f **points, int count[], int objCount, Vector2f position, Vector2f startSpeed, bool isStatic, float angularSpeed);
   ~CCompositeBody(void);
 
   virtual void Render();

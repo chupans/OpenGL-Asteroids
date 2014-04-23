@@ -4,10 +4,8 @@ using namespace std;
 
 
 
-TEdge::TEdge( Vector2f startPoint, Vector2f endPoint ) 
+TEdge::TEdge( Vector2f startPoint, Vector2f endPoint ) : _p1(startPoint), _p2(endPoint)
 {
-  _p1 = startPoint;
-  _p2 = endPoint;
   Vector2f edgenormal( _p2.getY() - _p1.getY(), - _p2.getX() + _p1.getX()); // edge vector is (a,b), normal vector is (b, -a)
   _normal = edgenormal;
   _normal.normalize();
@@ -52,7 +50,7 @@ CPolyCollider::CPolyCollider( Vector2f points[], unsigned int count, Vector2f po
   m_CircumCircleRadius = 0;
   for (i = 0; i < count; i++)
     center += points[i];
-  center /= count;
+  center /= (float)count;
 
   for (i = 0; i < count; i++)
   {
@@ -73,7 +71,7 @@ bool CPolyCollider::ContainPoint( Vector2f point )
 {
   vector<TEdge>::iterator edgesIt;
 
-  for (edgesIt = _edges.begin(); edgesIt < _edges.end(); edgesIt++)
+  for (edgesIt = _edges.begin(); edgesIt != _edges.end(); edgesIt++)
   {
     if (edgesIt->onWhichSide(point) <= 0)
       return false;
@@ -88,7 +86,7 @@ bool CPolyCollider::DoCollideWith( ICollider *other, Vector2f &collidePoint )
   vector<Vector2f>::iterator pIt;
   bool doTheyCollide = false;
 
-  for (edgesIt = this->_edges.begin(); edgesIt < this->_edges.end(); edgesIt++)
+  for (edgesIt = this->_edges.begin(); edgesIt != this->_edges.end(); edgesIt++)
   {
     if (other->ContainPoint(edgesIt->_p1))
     {
@@ -100,7 +98,7 @@ bool CPolyCollider::DoCollideWith( ICollider *other, Vector2f &collidePoint )
   collidePoint = Vector2f::ZERO;
   for (pIt = points.begin(); pIt < points.end(); pIt++)
   {
-    collidePoint += *pIt/points.size();
+    collidePoint += *pIt/(float)points.size();
   }
   return doTheyCollide;
 }
@@ -114,7 +112,7 @@ bool CPolyCollider::DoCollideWith( ICollider *other )
 void CPolyCollider::UpdatePosition( Vector2f shift )
 {
   vector<TEdge>::iterator edgesIt;
-  for (edgesIt = _edges.begin(); edgesIt < _edges.end(); edgesIt++)
+  for (edgesIt = _edges.begin(); edgesIt != _edges.end(); edgesIt++)
   {
     edgesIt->UpdatePosition(shift);
   }
@@ -125,7 +123,7 @@ void CPolyCollider::Rotate( float angle, float delta )
 {
   vector<TEdge>::iterator edgeIt;
 
-  for (edgeIt = _edges.begin(); edgeIt < _edges.end(); edgeIt++)
+  for (edgeIt = _edges.begin(); edgeIt != _edges.end(); edgeIt++)
   {
     edgeIt->Rotate(m_center, delta);
   }

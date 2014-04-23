@@ -4,9 +4,46 @@
 
 using namespace std;
 
-CCompositeBody::CCompositeBody(void)
+CCompositeBody::CCompositeBody(Vector2f **points, int count[], int objCount, Vector2f position, Vector2f startSpeed, bool isStatic, float angularSpeed)
 {
+  int i;
+  m_collider = new CCompositeCollider(points, count, objCount, position);
+  m_rotMatrix.InitIdentity();
+  m_speed = startSpeed;
+  m_speedChange = Vector2f::ZERO;
+  m_isStatic = isStatic;
+  m_angle = 0;
+  m_angularSpeed = angularSpeed;
+  m_angularSpeedChange = 0;
+  indicesCount = 0;
+  vector<Vector2f> _points;
+  vector<unsigned int> indices;
+  int curCount = 0;
 
+  for (m_mass = 0, i = 0; i < objCount; i++)
+  {
+    m_mass += fabs(PolyFunctions::CalcPolyArea(points[i], count[i]));
+    for (int j = 0; j < count[i]; j++)
+    {
+      _points.push_back(points[i][j]);
+      indices.push_back(curCount);
+      curCount++;
+      indicesCount++;
+    }
+    indices.push_back(curCount - count[i]);
+    indicesCount++;
+  }
+
+  glGenBuffers(1, &(m_vbo));
+  glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
+  glBufferData(GL_ARRAY_BUFFER, sizeof(Vector2f)*(indicesCount), &_points[0], GL_STATIC_DRAW);
+
+  glGenBuffers(1, &(m_ibo));
+  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_ibo);
+  glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int)*indices.size(), &indices[0], GL_STATIC_DRAW);
+
+  glGenBuffers(1, &(m_debugVbo));
+  glBindBuffer(GL_ARRAY_BUFFER, m_debugVbo);
 }
 
 CCompositeBody::~CCompositeBody(void)
@@ -22,7 +59,7 @@ void CCompositeBody::Render()
 
   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_ibo);
 
-  glDrawElements(GL_LINE_STRIP, m_collider->_edges.size() + 1, GL_UNSIGNED_INT, 0);
+  glDrawElements(GL_LINE_STRIP, indicesCount, GL_UNSIGNED_INT, 0);
 
   glDisableVertexAttribArray(0);
 }
@@ -40,10 +77,14 @@ void CCompositeBody::SetAngularSpeedChange( float angSpeedChange )
 void CCompositeBody::RenderDebug( GLint loc )
 {
   vector<TEdge>::iterator it;
+  vector<CPolyCollider*>::iterator collIt;
   vector<Vector2f> points;
-  for (it = m_collider->_edges.begin(); it < m_collider->_edges.end(); it++)
+  for (collIt = m_collider->m_polyColliders.begin(); collIt != m_collider->m_polyColliders.end(); collIt++)
   {
-    points.push_back(it->_p1);
+    for (it = (*collIt)->_edges.begin(); it != (*collIt)->_edges.end(); it++)
+    {
+      points.push_back(it->_p1);
+    }
   }
 
   glBindBuffer(GL_ARRAY_BUFFER, m_debugVbo);
@@ -55,7 +96,7 @@ void CCompositeBody::RenderDebug( GLint loc )
 
   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_ibo);
 
-  glDrawElements(GL_LINE_STRIP, points.size()+1, GL_UNSIGNED_INT, 0);
+  glDrawElements(GL_LINE_STRIP, indicesCount, GL_UNSIGNED_INT, 0);
 
   glDisableVertexAttribArray(0);
   glUniform1i(loc, (GLint)0);

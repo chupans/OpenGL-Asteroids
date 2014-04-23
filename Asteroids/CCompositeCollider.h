@@ -5,7 +5,7 @@
 class CCompositeCollider : public ICollider
 {
 public:
-  CCompositeCollider(std::vector<CPolyCollider*> colliders);
+  CCompositeCollider(Vector2f **points, int count[], int objCount, Vector2f position);
   ~CCompositeCollider(void);
 
   virtual void Rotate( float angle, float delta );
@@ -18,7 +18,6 @@ public:
   virtual bool ProbablyCollideWith( ICollider *other );
   virtual float GetCircumCircleRadius();
 
-private:
   std::vector<CPolyCollider*> m_polyColliders;
 
 };

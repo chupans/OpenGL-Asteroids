@@ -1,5 +1,6 @@
 #pragma once
 #include "math_3d.h"
+#include <vector>
 
 template <typename T>
 T Clamp (T const val, T const lowerBound, T const topBound)
@@ -14,4 +15,10 @@ T Clamp (T const val, T const lowerBound, T const topBound)
   return clampedVal;
 };
 
-void GenerateConvexPolygon(int count, Vector2f resultPoints[]);
+class PolyFunctions
+{
+public:
+  static void GenerateConvexPolygon(int count, std::vector<Vector2f> &resultPoints);
+  static void CutPolygonIntoPeaces(std::vector<Vector2f> &polygonPoints, std::vector< std::vector<Vector2f> > &polyPieces);
+  static float CalcPolyArea(Vector2f points[], int count);
+};

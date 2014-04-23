@@ -22,7 +22,7 @@ void CPolyBody::RenderDebug (GLint loc)
 {
   vector<TEdge>::iterator it;
   vector<Vector2f> points;
-  for (it = m_collider->_edges.begin(); it < m_collider->_edges.end(); it++)
+  for (it = m_collider->_edges.begin(); it != m_collider->_edges.end(); it++)
   {
     points.push_back(it->_p1);
   }
@@ -100,7 +100,6 @@ ICollider* CPolyBody::GetCollider()
 
 CPolyBody::CPolyBody( Vector2f points[], unsigned int count, Vector2f position, Vector2f startSpeed, bool isStatic, float angularSpeed )
 {
-  float area = 0;
   unsigned int i;
   vector<unsigned int> indices;
   m_rotMatrix.InitIdentity();
@@ -111,22 +110,11 @@ CPolyBody::CPolyBody( Vector2f points[], unsigned int count, Vector2f position, 
   m_angularSpeed = angularSpeed;
   m_collider = new CPolyCollider(points, count, position);
   m_angularSpeedChange = 0;
-  indices.push_back(0);
   for (i = 0; i < count; i++)
-  {
-    if (i+1 < count)
-    {
-      indices.push_back(i+1);
-      area += (points[i].getX() + points[i+1].getX()) * (points[i].getY() - points[i+1].getY());
-    }
-    else
-    {
-      indices.push_back(0);
-      area += (points[i].getX() + points[0].getX()) * (points[i].getY() - points[0].getY());
-    }
-  }
+      indices.push_back(i);
+  indices.push_back(0);
 
-  m_mass = fabs(area);
+  m_mass = fabs(PolyFunctions::CalcPolyArea(points, count));
 
   glGenBuffers(1, &(m_vbo));
   glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
@@ -157,7 +145,7 @@ bool CPolyBody::IsStatic()
 
 void CPolyBody::SetSpeedChange( Vector2f speedChange )
 {
-  m_speedChange = speedChange;
+  m_speedChange += speedChange;
 }
 
 void CPolyBody::SetAngle( float angle )

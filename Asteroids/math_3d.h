@@ -18,8 +18,8 @@ protected:
 public:
     Vector2f() { _x = _y = 0; }
     Vector2f(float x, float y) { _x = x; _y = y; }
-    Vector2f& operator+= (const Vector2f other);
-    Vector2f& operator-= (const Vector2f other);
+    Vector2f& operator+= (const Vector2f &other);
+    Vector2f& operator-= (const Vector2f &other);
     Vector2f& operator*= (float factor);
     Vector2f& operator/= (float divider);
     Vector2f operator * (float  factor) const;

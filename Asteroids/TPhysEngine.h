@@ -2,6 +2,7 @@
 #include "IBody.h"
 #include "CCollision.h"
 #include <vector>
+#include <list>
 
 class TPhysEngine
 {
@@ -17,6 +18,6 @@ public:
   int nCollision;
   float maxDeltaTime;
   std::vector<IBody*> m_existingBodies;
-  std::vector<CCollision> m_existingCollissions;
+  std::list<CCollision> m_existingCollissions;
 
 };

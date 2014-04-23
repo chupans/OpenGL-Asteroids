@@ -188,14 +188,14 @@ void Vector2f::normalize()
 	_y /= length;
 }
 
-Vector2f& Vector2f::operator+=( const Vector2f other )
+Vector2f& Vector2f::operator+=( const Vector2f &other )
 {
 	this->_x += other.getX();
 	this->_y += other.getY();
 	return *this;
 }
 
-Vector2f& Vector2f::operator-=( const Vector2f other )
+Vector2f& Vector2f::operator-=( const Vector2f &other )
 {
 	this->_x -= other.getX();
 	this->_y -= other.getY();

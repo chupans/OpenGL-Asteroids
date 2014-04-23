@@ -2,14 +2,15 @@
 #include <vector>
 #include <algorithm>
 #include "time.h"
+#include "TConstants.h"
 
 using namespace std;
 
-void GenerateConvexPolygon(int count, Vector2f resultPoints[])
+void PolyFunctions::GenerateConvexPolygon( int count, std::vector<Vector2f> &resultPoints )
 {
   vector<float> angles(count, 0);
   int i;
-  float s, summ, factor;
+  float summ, factor;
   float x, y;
   for (i = 0, summ = 0; i < count; i++)
   {
@@ -25,13 +26,57 @@ void GenerateConvexPolygon(int count, Vector2f resultPoints[])
     summ += angles[i];
   }
 
-  float length = 0.2;
+  float length = 0.1f;
   for (i = 0, summ = 0; i < count; i++)
   {
     length += (float)(rand()% 20)/1000.0f - 0.01f;
     summ += angles[i];
     x = cosf(summ) * length;
     y = sinf(summ) * length;
-    resultPoints[i] = Vector2f(x, y);
+    resultPoints.push_back(Vector2f(x, y));
+  }
+}
+
+float PolyFunctions::CalcPolyArea( Vector2f points[], int count )
+{
+  float area;
+  int i;
+  for (area = 0, i = 0; i < count; i++)
+  {
+    if (i+1 < count)
+    {
+      area += (points[i].getX() + points[i+1].getX()) * (points[i].getY() - points[i+1].getY());
+    }
+    else
+    {
+      area += (points[i].getX() + points[0].getX()) * (points[i].getY() - points[0].getY());
+    }
+  }
+  return area;
+}
+
+void PolyFunctions::CutPolygonIntoPeaces( std::vector<Vector2f> &polygonPoints, std::vector< std::vector<Vector2f> > &polyPieces )
+{
+  vector<Vector2f>::iterator polyPointsIt;
+  int piecesCount = polygonPoints.size() / TConstants::piecesPointCount;
+  int i, j, currentPoint;
+  Vector2f center = Vector2f::ZERO;
+
+  for (polyPointsIt = polygonPoints.begin(); polyPointsIt != polygonPoints.end(); polyPointsIt++)
+  {
+    center += *polyPointsIt;
+  }
+  center /= (float)polygonPoints.size();
+
+  vector<Vector2f> polyPiece;
+  for (i = 0, currentPoint = 0; i < piecesCount - 1; i ++)
+  {
+    polyPiece.clear();
+    for (j = 0; j < TConstants::piecesPointCount; j++)
+    {
+      polyPiece.push_back(polygonPoints[currentPoint]);
+    }
+    polyPiece.push_back(center);
+    polyPieces.push_back(polyPiece);
   }
 }

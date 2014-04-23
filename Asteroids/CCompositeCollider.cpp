@@ -1,20 +1,27 @@
 #include "CCompositeCollider.h"
 using namespace std;
 
-CCompositeCollider::CCompositeCollider(vector<CPolyCollider*> colliders)
+CCompositeCollider::CCompositeCollider(Vector2f **points, int count[], int objCount, Vector2f position)
 {
   vector<CPolyCollider*>::iterator colliderIt;
   float distance;
+  int i;
+  CPolyCollider *col;
   m_center = Vector2f::ZERO;
   m_CircumCircleRadius = 0;
 
-  for (colliderIt = colliders.begin(); colliderIt < colliders.end(); colliderIt++)
+  for (i = 0; i < objCount; i++)
   {
-    m_polyColliders.push_back(*colliderIt);
-    m_center += (*colliderIt)->GetPosition() / colliders.size();
+    col = new CPolyCollider(points[i], count[i], Vector2f::ZERO/*points[i][0]*/);
+    m_polyColliders.push_back(col);
   }
+  for (colliderIt = m_polyColliders.begin(); colliderIt != m_polyColliders.end(); colliderIt++)
+  {
+    m_center += (*colliderIt)->GetPosition() / (float)m_polyColliders.size();
+  }
+  UpdatePosition(position);
 
-  for (colliderIt = colliders.begin(); colliderIt < colliders.end(); colliderIt++)
+  for (colliderIt = m_polyColliders.begin(); colliderIt != m_polyColliders.end(); colliderIt++)
   {
     distance = Vector2f::distanceBetween(m_center, (*colliderIt)->GetPosition()) + (*colliderIt)->GetCircumCircleRadius();
     if (distance > m_CircumCircleRadius)
@@ -25,7 +32,7 @@ CCompositeCollider::CCompositeCollider(vector<CPolyCollider*> colliders)
 CCompositeCollider::~CCompositeCollider(void)
 {
   vector<CPolyCollider*>::iterator colliderIt;
-  for (colliderIt = m_polyColliders.begin(); colliderIt < m_polyColliders.end(); colliderIt++)
+  for (colliderIt = m_polyColliders.begin(); colliderIt != m_polyColliders.end(); colliderIt++)
   {
     delete *colliderIt;
   }
@@ -33,7 +40,7 @@ CCompositeCollider::~CCompositeCollider(void)
 void CCompositeCollider::Rotate( float angle, float delta )
 {
   vector<CPolyCollider*>::iterator colliderIt;
-  for (colliderIt = m_polyColliders.begin(); colliderIt < m_polyColliders.end(); colliderIt++)
+  for (colliderIt = m_polyColliders.begin(); colliderIt != m_polyColliders.end(); colliderIt++)
   {
     (*colliderIt)->Rotate(angle, delta);
   }
@@ -42,16 +49,17 @@ void CCompositeCollider::Rotate( float angle, float delta )
 void CCompositeCollider::UpdatePosition( Vector2f shift )
 {
   vector<CPolyCollider*>::iterator colliderIt;
-  for (colliderIt = m_polyColliders.begin(); colliderIt < m_polyColliders.end(); colliderIt++)
+  for (colliderIt = m_polyColliders.begin(); colliderIt != m_polyColliders.end(); colliderIt++)
   {
     (*colliderIt)->UpdatePosition(shift);
   }
+  m_center += shift;
 }
 
 bool CCompositeCollider::DoCollideWith( ICollider *other )
 {
   vector<CPolyCollider*>::iterator colliderIt;
-  for (colliderIt = m_polyColliders.begin(); colliderIt < m_polyColliders.end(); colliderIt++)
+  for (colliderIt = m_polyColliders.begin(); colliderIt != m_polyColliders.end(); colliderIt++)
   {
     if ((*colliderIt)->DoCollideWith(other))
       return true;
@@ -66,7 +74,7 @@ bool CCompositeCollider::DoCollideWith( ICollider *other, Vector2f &collidePoint
   collidePoint = Vector2f::ZERO;
   int collidePointsCount = 0;
   vector<CPolyCollider*>::iterator colliderIt;
-  for (colliderIt = m_polyColliders.begin(); colliderIt < m_polyColliders.end(); colliderIt++)
+  for (colliderIt = m_polyColliders.begin(); colliderIt != m_polyColliders.end(); colliderIt++)
   {
     if ((*colliderIt)->DoCollideWith(other, temp))
     {
@@ -76,7 +84,7 @@ bool CCompositeCollider::DoCollideWith( ICollider *other, Vector2f &collidePoint
     }
   }
   if (collidePointsCount > 0)
-    collidePoint /= collidePointsCount;
+    collidePoint /= (float)collidePointsCount;
 
   return doCollide;
 }
@@ -91,7 +99,7 @@ bool CCompositeCollider::ContainPoint( Vector2f point )
 {
   bool doCollide = false;
   vector<CPolyCollider*>::iterator colliderIt;
-  for (colliderIt = m_polyColliders.begin(); colliderIt < m_polyColliders.end(); colliderIt++)
+  for (colliderIt = m_polyColliders.begin(); colliderIt != m_polyColliders.end(); colliderIt++)
   {
     if ((*colliderIt)->ContainPoint(point))
       return true;
@@ -107,7 +115,7 @@ Vector2f CCompositeCollider::GetPosition()
 bool CCompositeCollider::ProbablyCollideWith( ICollider *other )
 {
   vector<CPolyCollider*>::iterator colliderIt;
-  for (colliderIt = m_polyColliders.begin(); colliderIt < m_polyColliders.end(); colliderIt++)
+  for (colliderIt = m_polyColliders.begin(); colliderIt != m_polyColliders.end(); colliderIt++)
   {
     if ((*colliderIt)->ProbablyCollideWith(other))
       return true;
