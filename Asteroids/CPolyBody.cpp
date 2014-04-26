@@ -145,7 +145,7 @@ bool CPolyBody::IsStatic()
 
 void CPolyBody::SetSpeedChange( Vector2f speedChange )
 {
-  m_speedChange += speedChange;
+  m_speedChange = speedChange;
 }
 
 void CPolyBody::SetAngle( float angle )

@@ -13,8 +13,6 @@ void TPhysEngine::physStep( float deltaTime )
   vector<IBody*>::iterator objIt, otherObjIt;
   list<CCollision>::iterator collIt;
   Vector2f collidePoint = Vector2f::ZERO;
-  for (objIt = m_existingBodies.begin(); objIt != m_existingBodies.end(); objIt++) //FIXME: Лучше создать массив коллизий(т.к. таким образом не будут обрабатываться коллизии, где вошли три круга в друг друга). Дубликаты удалить
-    (*objIt)->wasProcessed = false;
   for (objIt = m_existingBodies.begin(); objIt != m_existingBodies.end(); objIt++)
   {
     if (!(*objIt)->IsStatic())

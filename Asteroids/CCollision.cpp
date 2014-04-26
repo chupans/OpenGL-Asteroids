@@ -51,12 +51,21 @@ bool CCollision::ProcessCollision( float deltaTime )
   else
   {
     Vector2f collidePoint = Vector2f::ZERO;
-    Vector2f collidePoint2 = Vector2f::ZERO;
+    Vector2f collidePointTemp = Vector2f::ZERO;
+    int pointsCount;
     collide = false;
-    collide |= m_body1->GetCollider()->DoCollideWith(m_body2->GetCollider(), collidePoint);
-    collide |= m_body2->GetCollider()->DoCollideWith(m_body1->GetCollider(), collidePoint2);
-    collidePoint += collidePoint2;
-    collidePoint/=2;
+    if (m_body1->GetCollider()->DoCollideWith(m_body2->GetCollider(), collidePoint) == true)
+    {
+      collide = true;
+      pointsCount++;
+    }
+    if ( m_body2->GetCollider()->DoCollideWith(m_body1->GetCollider(), collidePointTemp) == true)
+    {
+      collidePoint += collidePointTemp;
+      collide = true;
+      pointsCount++;
+    }
+    collidePoint/=pointsCount;
     if (collide)
     {
       Vector2f v2 = m_body2->GetSpeed();
@@ -118,6 +127,8 @@ bool CCollision::ProcessCollision( float deltaTime )
 
         m_body1->SetSpeedChange(newV1 - v1);
         m_body2->SetSpeedChange(newV2 - v2);
+        m_body1->UpdateSpeed();
+        m_body2->UpdateSpeed();
       }
       startDistance = Vector2f::distanceBetween(m_body2->GetPosition(), m_body1->GetPosition());
       stepsLeftIdle = 50;
