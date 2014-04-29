@@ -67,7 +67,10 @@ Vector2f CPolyBody::GetSpeed()
 void CPolyBody::UpdateSpeed()
 {
   if (m_isStatic)
+  {
+    m_collider->UpdatePosition(m_speedChange);
     return;
+  }
   m_speed += m_speedChange;
   m_speedChange = Vector2f::ZERO;
   m_angularSpeed += m_angularSpeedChange;

@@ -177,11 +177,23 @@
 				>
 			</File>
 			<File
+				RelativePath=".\CBullet.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\CCollision.cpp"
 				>
 			</File>
 			<File
+				RelativePath=".\CPlayerObject.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\Functions.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Game.cpp"
 				>
 			</File>
 			<File
@@ -236,6 +248,10 @@
 					>
 				</File>
 			</Filter>
+			<Filter
+				Name="GameObjects"
+				>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="Заголовочные файлы"
@@ -247,11 +263,19 @@
 				>
 			</File>
 			<File
+				RelativePath=".\CBullet.h"
+				>
+			</File>
+			<File
 				RelativePath=".\CCollision.h"
 				>
 			</File>
 			<File
 				RelativePath=".\Functions.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Game.h"
 				>
 			</File>
 			<File
@@ -307,6 +331,18 @@
 				</File>
 				<File
 					RelativePath=".\IBody.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="GameObjects"
+				>
+				<File
+					RelativePath=".\CPlayerObject.h"
+					>
+				</File>
+				<File
+					RelativePath=".\IGameObject.h"
 					>
 				</File>
 			</Filter>

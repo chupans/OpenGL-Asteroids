@@ -68,15 +68,15 @@ void PolyFunctions::CutPolygonIntoPeaces( std::vector<Vector2f> &polygonPoints, 
   }
   center /= (float)polygonPoints.size();
 
-  vector<Vector2f> polyPiece;
+  vector<Vector2f> peice;
   for (i = 0, currentPoint = 0; i < piecesCount - 1; i ++)
   {
-    polyPiece.clear();
+    peice.clear();
     for (j = 0; j < TConstants::piecesPointCount; j++)
     {
-      polyPiece.push_back(polygonPoints[currentPoint]);
+      peice.push_back(polygonPoints[currentPoint]);
     }
-    polyPiece.push_back(center);
-    polyPieces.push_back(polyPiece);
+    peice.push_back(center);
+    polyPieces.push_back(peice);
   }
 }

@@ -52,7 +52,7 @@ bool CCollision::ProcessCollision( float deltaTime )
   {
     Vector2f collidePoint = Vector2f::ZERO;
     Vector2f collidePointTemp = Vector2f::ZERO;
-    int pointsCount;
+    int pointsCount = 0;
     collide = false;
     if (m_body1->GetCollider()->DoCollideWith(m_body2->GetCollider(), collidePoint) == true)
     {
@@ -65,7 +65,7 @@ bool CCollision::ProcessCollision( float deltaTime )
       collide = true;
       pointsCount++;
     }
-    collidePoint/=pointsCount;
+    collidePoint /= pointsCount;
     if (collide)
     {
       Vector2f v2 = m_body2->GetSpeed();
