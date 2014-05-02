@@ -177,15 +177,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\CBullet.cpp"
-				>
-			</File>
-			<File
 				RelativePath=".\CCollision.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\CPlayerObject.cpp"
 				>
 			</File>
 			<File
@@ -251,6 +243,18 @@
 			<Filter
 				Name="GameObjects"
 				>
+				<File
+					RelativePath=".\Asteroid.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\CBullet.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\CPlayerObject.cpp"
+					>
+				</File>
 			</Filter>
 		</Filter>
 		<Filter
@@ -337,6 +341,10 @@
 			<Filter
 				Name="GameObjects"
 				>
+				<File
+					RelativePath=".\Asteroid.h"
+					>
+				</File>
 				<File
 					RelativePath=".\CPlayerObject.h"
 					>

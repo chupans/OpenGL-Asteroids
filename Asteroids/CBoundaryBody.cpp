@@ -127,3 +127,13 @@ float CBoundaryBody::GetAngularSpeed()
 void CBoundaryBody::SetAngularSpeedChange( float angSpeedChange )
 {
 }
+
+bool CBoundaryBody::MarkedToDelete()
+{
+  return false;
+}
+
+void CBoundaryBody::Delete()
+{
+  return;
+}

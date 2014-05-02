@@ -29,6 +29,10 @@ public:
   virtual float GetAngularSpeed();
   virtual void SetAngularSpeedChange( float angSpeedChange );
 
+  virtual bool MarkedToDelete();
+
+  virtual void Delete();
+
 private:
   CBoundaryCollider *m_collider;
   GLuint m_vbo, m_ibo;

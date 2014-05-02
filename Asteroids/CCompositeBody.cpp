@@ -15,6 +15,7 @@ CCompositeBody::CCompositeBody(Vector2f **points, int count[], int objCount, Vec
   m_angle = 0;
   m_angularSpeed = angularSpeed;
   m_angularSpeedChange = 0;
+  m_delete = false;
   indicesCount = 0;
   vector<Vector2f> _points;
   vector<unsigned int> indices;
@@ -190,4 +191,14 @@ float CCompositeBody::GetMass()
 float CCompositeBody::GetAngle()
 {
   return m_angle;
+}
+
+bool CCompositeBody::MarkedToDelete()
+{
+  return m_delete;
+}
+
+void CCompositeBody::Delete()
+{
+  m_delete = true;
 }

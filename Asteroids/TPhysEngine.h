@@ -17,7 +17,7 @@ private:
 public:
   int nCollision;
   float maxDeltaTime;
-  std::vector<IBody*> m_existingBodies;
+  std::list<IBody*> m_existingBodies;
   std::list<CCollision> m_existingCollissions;
 
 };

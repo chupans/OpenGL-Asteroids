@@ -4,22 +4,23 @@
 using namespace std;
 
 bool shouldDelete (const CCollision& value) { return (value.m_done); }
+bool deleteBodyPred (IBody*& value ) { return value->MarkedToDelete();}
 
 void TPhysEngine::physStep( float deltaTime )
 {
   if (deltaTime > maxDeltaTime)
     return;
 
-  vector<IBody*>::iterator objIt, otherObjIt;
+  list<IBody*>::iterator objIt, otherObjIt;
   list<CCollision>::iterator collIt;
   Vector2f collidePoint = Vector2f::ZERO;
   for (objIt = m_existingBodies.begin(); objIt != m_existingBodies.end(); objIt++)
   {
-    if (!(*objIt)->IsStatic())
+    if (!(*objIt)->IsStatic() && !(*objIt)->MarkedToDelete())
     {
       for (otherObjIt = m_existingBodies.begin(); otherObjIt != m_existingBodies.end(); otherObjIt++)
       {
-        if ((*objIt) != (*otherObjIt))
+        if ((*objIt) != (*otherObjIt) && !(*otherObjIt)->MarkedToDelete())
         {
           CCollision newColl(*objIt, *otherObjIt);
           collIt = find(m_existingCollissions.begin(), m_existingCollissions.end(), newColl);
@@ -37,6 +38,7 @@ void TPhysEngine::physStep( float deltaTime )
   }
 
   m_existingCollissions.remove_if(shouldDelete);
+  m_existingBodies.remove_if(deleteBodyPred);
 
   for (objIt = m_existingBodies.begin(); objIt != m_existingBodies.end(); objIt++)
   {

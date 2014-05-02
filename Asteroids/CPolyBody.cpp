@@ -113,6 +113,7 @@ CPolyBody::CPolyBody( Vector2f points[], unsigned int count, Vector2f position, 
   m_angularSpeed = angularSpeed;
   m_collider = new CPolyCollider(points, count, position);
   m_angularSpeedChange = 0;
+  m_delete = false;
   for (i = 0; i < count; i++)
       indices.push_back(i);
   indices.push_back(0);
@@ -184,4 +185,14 @@ float CPolyBody::GetAngularSpeed()
 void CPolyBody::SetAngularSpeedChange( float angSpeedChange )
 {
   m_angularSpeedChange = angSpeedChange;
+}
+
+bool CPolyBody::MarkedToDelete()
+{
+  return m_delete;
+}
+
+void CPolyBody::Delete()
+{
+  m_delete = true;
 }

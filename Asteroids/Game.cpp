@@ -99,7 +99,7 @@ void Game::Step()
   curTime = GetTickCount();
   timeDelta = curTime - lastTime;
   lastTime = curTime;
-  timeDelta = 10;
+  timeDelta = 1;
 
   pGameCamera->OnRender();
 
@@ -109,7 +109,7 @@ void Game::Step()
   //p.Rotate(0.0f, Scale, 0.0f);
   //
   p.SetPerspectiveProj(60.0f, m_width, m_height, 1.0f, 100.0f);
-  vector<IBody*>::iterator it;
+  list<IBody*>::iterator it;
   for (it = eng->m_existingBodies.begin(); it != eng->m_existingBodies.end(); it++)
   {
     p.SetCamera(pGameCamera->GetPos(), pGameCamera->GetTarget(), pGameCamera->GetUp());

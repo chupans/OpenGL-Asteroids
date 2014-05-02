@@ -27,7 +27,7 @@ void CPlayerObject::Move( MovementDir dir )
     movement = Vector2f(-1.0f, 0.0f);
     break;
   }
-  movement /= 10;
+  movement /= 1;
   m_body->SetSpeedChange(movement);
   m_body->UpdateSpeed();
 }

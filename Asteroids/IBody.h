@@ -25,7 +25,7 @@ public:
   virtual void SetAngle(float angle) = 0;
   virtual Matrix2f GetRotMatrix() = 0;
   virtual float GetAngularSpeed() = 0;
-  bool wasProcessed;  //HACK
-  //virtual Vector2f GetCenter();
+  virtual bool MarkedToDelete() = 0;
+  virtual void Delete() = 0;
 
 };

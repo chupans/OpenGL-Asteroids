@@ -13,7 +13,7 @@ private:
   float m_mass;
   bool m_isStatic;
   CPolyCollider *m_collider;
-  bool wasProcessed;
+  bool m_delete;
   GLuint m_vbo, m_debugVbo;
   GLuint m_ibo;
   Matrix2f m_rotMatrix;
@@ -41,5 +41,9 @@ public:
   virtual float GetAngularSpeed();
 
   virtual void SetAngularSpeedChange( float angSpeedChange );
+
+  virtual bool MarkedToDelete();
+
+  virtual void Delete();
 
 };
